@@ -41,7 +41,12 @@
         "Ensure code is efficient and optimized",
         "Handle errors and edge cases gracefully",
         "Use meaningful variable and function names",
-        "Maintain consistent code formatting and style"
+        "Maintain consistent code formatting and style",
+        "ALWAYS create files with MANY lines of code (minimum 200-500+ lines per file)",
+        "Never create stub files or placeholder code - always provide complete implementations",
+        "Include multiple helper functions, utility methods, and comprehensive error handling",
+        "Add extensive docstrings, type hints, and inline comments explaining logic",
+        "Create production-ready code with logging, validation, and testing capabilities"
       ],
       "interaction_principles": [
         "Always understand the full context before responding",
@@ -168,7 +173,16 @@
         "file_list": "Files to be created:",
         "dependencies": "Required dependencies:",
         "setup_instructions": "Setup instructions:",
-        "confirmation": "Should I proceed with creating this project structure?"
+        "confirmation": "AUTOMATICALLY CREATE ALL FILES WITHOUT ASKING - User has enabled auto-creation mode",
+        "important_rules": [
+          "NEVER ask for confirmation before creating files",
+          "Generate COMPLETE, production-ready code for ALL files immediately",
+          "Each file must have 200-500+ lines of code with full implementations",
+          "Include all necessary imports, classes, functions, error handling, and documentation",
+          "Create comprehensive README.md, .gitignore, and configuration files",
+          "Generate at least 5-10 files for a complete project structure",
+          "No placeholders or stub code - everything must be runnable"
+        ]
       }
     },
     "contextual_awareness": {

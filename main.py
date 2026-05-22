@@ -646,20 +646,15 @@ Generate at least 5-10 files for a complete project structure."""
                 print(f"{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}\n")
                 print(f"{Colors.WHITE}{response}{Colors.RESET}\n")
                 
-                # Ask for confirmation ONCE before creating files
-                confirm = input(f"{Colors.BRIGHT_GREEN}Create all these files automatically? (yes/no): {Colors.RESET}").strip().lower()
+                # Automatically create ALL files without asking
+                print(f"\n{Colors.BRIGHT_GREEN}✨ Creating all files automatically...{Colors.RESET}\n")
+                self._parse_and_create_all_files(project_name, response, project_type)
                 
-                if confirm in ['yes', 'y']:
-                    # Parse and create ALL files at once
-                    self._parse_and_create_all_files(project_name, response, project_type)
-                    
-                    # Auto-select the project
-                    self.db.set_active_project(project_name)
-                    self.current_project = self.db.get_project(project_name)
-                    print(f"\n{Colors.BRIGHT_GREEN}✓ Project setup complete! Switched to: {project_name}{Colors.RESET}\n")
-                    print(f"{Colors.DIM}Tip: Use /edit <filename> <request> to modify any file{Colors.RESET}\n")
-                else:
-                    print(f"\n{Colors.DIM}Files not created. You can use /edit later to add files manually.{Colors.RESET}\n")
+                # Auto-select the project
+                self.db.set_active_project(project_name)
+                self.current_project = self.db.get_project(project_name)
+                print(f"\n{Colors.BRIGHT_GREEN}✓ Project setup complete! Switched to: {project_name}{Colors.RESET}\n")
+                print(f"{Colors.DIM}Tip: Use /edit <filename> <request> to modify any file{Colors.RESET}\n")
                     
             except Exception as e:
                 print(f"\n{Colors.RED}✗ Error generating project: {e}{Colors.RESET}\n")
