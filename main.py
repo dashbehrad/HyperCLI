@@ -521,7 +521,10 @@ Provide clean, well-documented, and efficient code."""
             print(f"Usage: {Colors.BRIGHT_GREEN}/create <project_name>{Colors.RESET}\n")
             return
         
-        project_name = args.strip().split()[0]
+        # Parse project name and optional description
+        parts = args.strip().split(' ', 1)
+        project_name = parts[0]
+        user_description = parts[1] if len(parts) > 1 else ""
         
         # Validate project name
         if not re.match(r'^[a-zA-Z][a-zA-Z0-9_-]*$', project_name):
@@ -552,93 +555,195 @@ Provide clean, well-documented, and efficient code."""
             print(f"\n{Colors.BRIGHT_GREEN}✓ Project '{project_name}' created successfully{Colors.RESET}")
             print(f"Location: {Colors.DIM}{project_path}{Colors.RESET}\n")
             
-            # Ask about project type and files
-            print(f"{Colors.BRIGHT_CYAN}What type of project would you like to create?{Colors.RESET}")
-            print("Examples: Python web app, JavaScript CLI tool, React component library, etc.\n")
+            # Get project details from user if not provided
+            if not user_description:
+                print(f"{Colors.BRIGHT_CYAN}Describe what you want to build:{Colors.RESET}")
+                print("Examples: 'A Python Flask REST API with JWT authentication', 'A React todo app with TypeScript', etc.\n")
+                
+                try:
+                    project_type = input(f"{Colors.BRIGHT_WHITE}> Your project description: {Colors.RESET}")
+                except (EOFError, KeyboardInterrupt):
+                    print("\n")
+                    return
+            else:
+                project_type = user_description
+                print(f"{Colors.BRIGHT_CYAN}Project description:{Colors.RESET} {Colors.WHITE}{project_type}{Colors.RESET}\n")
             
-            # Get project details from user
-            try:
-                project_type = input(f"{Colors.BRIGHT_WHITE}> Project type/description: {Colors.RESET}")
-            except (EOFError, KeyboardInterrupt):
-                print("\n")
-                return
-            
-            # Ask AI for recommended structure
-            print(f"\n{Colors.DIM}Generating recommended project structure...{Colors.RESET}\n")
+            # Generate complete structure and files with AI
+            print(f"\n{Colors.DIM}AI is designing your project structure and generating all files...{Colors.RESET}\n")
             
             ai_prompt = f"""The user wants to create a new project called '{project_name}'.
-Project type/description: {project_type}
+Project description: {project_type}
 
-Please suggest a professional project structure including:
-1. Recommended folder structure
-2. Essential files to create
-3. Brief description of each file's purpose
-4. Any dependencies needed
+IMPORTANT: You must generate COMPLETE, READY-TO-RUN code for ALL files.
 
-Format your response clearly with sections for folders and files."""
+Your response MUST follow this EXACT format:
+
+## Project Structure
+```
+project_root/
+├── folder1/
+│   ├── file1.py
+│   └── file2.py
+├── folder2/
+│   └── file3.js
+└── README.md
+```
+
+## Files
+
+### filename: path/to/file1.py
+```language
+# Complete content of file1.py
+# Include ALL necessary imports, classes, functions
+# Make it production-ready
+```
+
+### filename: path/to/file2.js
+```language
+// Complete content of file2.js
+```
+
+### filename: README.md
+```markdown
+# {project_name}
+
+## Description
+{project_type}
+
+## Installation
+Step-by-step installation instructions.
+
+## Usage
+How to run and use this project.
+
+## Features
+- Feature 1
+- Feature 2
+
+## License
+MIT
+```
+
+REQUIREMENTS:
+1. Create ALL necessary files for a working project
+2. Include complete, runnable code (no placeholders like "add code here")
+3. Include proper error handling
+4. Add comments explaining complex logic
+5. Create a comprehensive README.md
+6. Include .gitignore appropriate for the project type
+7. Include requirements.txt or package.json if needed
+8. Make sure all imports and dependencies are correct
+
+Generate at least 5-10 files for a complete project structure."""
             
             try:
                 response = self.ollama.generate(ai_prompt, self.system_prompt, stream=False)
-                print(f"\n{Colors.BRIGHT_CYAN}Recommended Structure:{Colors.RESET}")
+                
+                # Display the generated structure
+                print(f"\n{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}")
+                print(f"{Colors.BOLD}{Colors.BRIGHT_WHITE}                    GENERATED PROJECT STRUCTURE                  {Colors.RESET}")
+                print(f"{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}\n")
                 print(f"{Colors.WHITE}{response}{Colors.RESET}\n")
                 
-                # Ask for confirmation
-                confirm = input(f"{Colors.BRIGHT_GREEN}Create these files now? (yes/no): {Colors.RESET}").strip().lower()
+                # Ask for confirmation ONCE before creating files
+                confirm = input(f"{Colors.BRIGHT_GREEN}Create all these files automatically? (yes/no): {Colors.RESET}").strip().lower()
                 
                 if confirm in ['yes', 'y']:
-                    # Parse and create files
-                    self.pending_files = []
-                    self._parse_and_create_files(project_name, response, project_type)
+                    # Parse and create ALL files at once
+                    self._parse_and_create_all_files(project_name, response, project_type)
                     
                     # Auto-select the project
                     self.db.set_active_project(project_name)
                     self.current_project = self.db.get_project(project_name)
-                    print(f"\n{Colors.BRIGHT_GREEN}✓ Switched to project: {project_name}{Colors.RESET}\n")
+                    print(f"\n{Colors.BRIGHT_GREEN}✓ Project setup complete! Switched to: {project_name}{Colors.RESET}\n")
+                    print(f"{Colors.DIM}Tip: Use /edit <filename> <request> to modify any file{Colors.RESET}\n")
                 else:
-                    print(f"\n{Colors.DIM}Files not created. You can use /edit later to add files.{Colors.RESET}\n")
+                    print(f"\n{Colors.DIM}Files not created. You can use /edit later to add files manually.{Colors.RESET}\n")
                     
             except Exception as e:
-                print(f"\n{Colors.RED}✗ Error generating structure: {e}{Colors.RESET}\n")
+                print(f"\n{Colors.RED}✗ Error generating project: {e}{Colors.RESET}\n")
                 
         except Exception as e:
             print(f"\n{Colors.RED}✗ Failed to create project: {e}{Colors.RESET}\n")
     
-    def _parse_and_create_files(
+    def _parse_and_create_all_files(
         self,
         project_name: str,
         ai_response: str,
         project_type: str
     ) -> None:
         """
-        Parse AI response and create files.
+        Parse AI response and create ALL files automatically with live animation.
         
         Args:
             project_name (str): Name of the project.
-            ai_response (str): AI's suggested structure.
+            ai_response (str): AI's complete file structure and content.
             project_type (str): Type of project.
         """
         project_path = self.config.PROJECTS_DIR / project_name
         
-        # Simple parsing: look for code blocks and file paths
+        # Advanced parsing for the new format: ### filename: path/to/file.ext
+        files_to_create = []
         lines = ai_response.split('\n')
+        
         current_file = None
         current_content = []
         in_code_block = False
+        language_marker = ""
         
-        files_to_create = []
-        
-        for line in lines:
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            
+            # Check for "### filename: path/to/file.ext" pattern
+            filename_match = re.match(r'^###\s*filename:\s*(.+)$', line.strip())
+            if filename_match:
+                current_file = filename_match.group(1).strip()
+                i += 1
+                continue
+            
             # Check for code block markers
             if line.strip().startswith('```'):
                 if not in_code_block:
                     # Starting a code block
                     in_code_block = True
-                    # Try to extract filename from the line
-                    parts = line.strip().split('`')
-                    if len(parts) >= 2:
-                        potential_file = parts[1].strip()
-                        if potential_file and not potential_file.startswith('```'):
-                            current_file = potential_file
+                    # Extract language if present
+                    lang_part = line.strip()[3:].strip()
+                    language_marker = lang_part if lang_part else ""
+                    
+                    # If we don't have a filename yet, try to infer from context
+                    if not current_file:
+                        # Try to guess from language
+                        if language_marker in ['python', 'py']:
+                            current_file = f"main.py"
+                        elif language_marker in ['javascript', 'js']:
+                            current_file = f"index.js"
+                        elif language_marker in ['typescript', 'ts']:
+                            current_file = f"index.ts"
+                        elif language_marker in ['html']:
+                            current_file = f"index.html"
+                        elif language_marker in ['css']:
+                            current_file = f"style.css"
+                        elif language_marker in ['json']:
+                            current_file = f"config.json"
+                        elif language_marker in ['markdown', 'md']:
+                            current_file = f"README.md"
+                        elif language_marker in ['txt']:
+                            current_file = f"file.txt"
+                        elif language_marker in ['gitignore']:
+                            current_file = f".gitignore"
+                        elif language_marker in ['yaml', 'yml']:
+                            current_file = f"config.yaml"
+                        elif language_marker in ['toml']:
+                            current_file = f"pyproject.toml"
+                        elif language_marker in ['sh', 'bash']:
+                            current_file = f"script.sh"
+                        elif language_marker in ['sql']:
+                            current_file = f"schema.sql"
+                        else:
+                            current_file = f"file.{language_marker}" if language_marker else "file.txt"
+                    
                     current_content = []
                 else:
                     # Ending a code block
@@ -648,92 +753,209 @@ Format your response clearly with sections for folders and files."""
                             'path': current_file,
                             'content': '\n'.join(current_content)
                         })
+                        print(f"  {Colors.BRIGHT_GREEN}✓{Colors.RESET} Parsed: {Colors.BRIGHT_WHITE}{current_file}{Colors.RESET}")
                     current_file = None
                     current_content = []
+                    language_marker = ""
             elif in_code_block:
                 current_content.append(line)
-        
-        # If no code blocks found, try to create basic files
-        if not files_to_create:
-            print(f"{Colors.DIM}Creating basic project files...{Colors.RESET}\n")
             
-            # Create a README
+            i += 1
+        
+        # If no files were parsed, create basic structure
+        if not files_to_create:
+            print(f"{Colors.DIM}Creating essential project files...{Colors.RESET}\n")
+            
+            # Create README.md
             readme_content = f"""# {project_name}
 
 {project_type}
 
 ## Getting Started
 
-This project was created with HyperCLI.
+This project was created with HyperCLI - AI Code Assistant.
+
+## Installation
+
+```bash
+# Add installation steps here
+```
 
 ## Usage
 
-TODO: Add usage instructions
+```bash
+# Add usage examples here
+```
+
+## Features
+
+- Feature 1
+- Feature 2
+
+## Project Structure
+
+```
+{project_name}/
+├── README.md
+├── .gitignore
+└── src/
+    └── main.py
+```
 
 ## License
 
-MIT
+MIT License
+
+## Generated by
+
+HyperCLI - AI-Powered Terminal Code Assistant
 """
-            files_to_create.append({
-                'path': 'README.md',
-                'content': readme_content
-            })
+            files_to_create.append({'path': 'README.md', 'content': readme_content})
             
             # Create .gitignore
-            gitignore_content = """__pycache__/
+            gitignore_content = """# Python
+__pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
 env/
 venv/
 ENV/
-node_modules/
-dist/
-build/
-*.egg-info/
-.env
+.venv
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Node.js (if applicable)
+node_modules/
+npm-debug.log
+yarn-error.log
 """
-            files_to_create.append({
-                'path': '.gitignore',
-                'content': gitignore_content
-            })
+            files_to_create.append({'path': '.gitignore', 'content': gitignore_content})
+            
+            # Create a basic main.py for Python projects
+            if 'python' in project_type.lower() or 'flask' in project_type.lower() or 'django' in project_type.lower():
+                main_py_content = f'''#!/usr/bin/env python3
+"""
+{project_name} - {project_type}
+
+Generated by HyperCLI - AI Code Assistant
+"""
+
+def main():
+    """Main entry point."""
+    print("Welcome to {project_name}!")
+    print("Start building your amazing project here.")
+
+
+if __name__ == "__main__":
+    main()
+'''
+                files_to_create.append({'path': 'main.py', 'content': main_py_content})
+            
+            # Create requirements.txt for Python projects
+            if 'python' in project_type.lower():
+                req_content = """# Core dependencies
+# Add your project dependencies here
+# Example:
+# flask==2.3.0
+# requests==2.31.0
+"""
+                files_to_create.append({'path': 'requirements.txt', 'content': req_content})
         
-        # Confirm files to create
-        print(f"\n{Colors.BRIGHT_CYAN}Files to create:{Colors.RESET}")
+        # Display summary of files to create
+        print(f"\n{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BRIGHT_WHITE}                    FILES TO CREATE ({len(files_to_create)} total)                   {Colors.RESET}")
+        print(f"{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}\n")
+        
         for i, file_info in enumerate(files_to_create, 1):
-            print(f"  {i}. {Colors.BRIGHT_WHITE}{file_info['path']}{Colors.RESET}")
+            status_icon = f"{Colors.BRIGHT_GREEN}✓{Colors.RESET}"
+            print(f"  [{i}/{len(files_to_create)}] {status_icon} {Colors.BRIGHT_WHITE}{file_info['path']}{Colors.RESET} ({len(file_info['content'])} chars)")
         
         print()
         
-        # Create each file with animation
+        # Create each file with live typing animation
+        created_count = 0
+        failed_count = 0
+        
         for i, file_info in enumerate(files_to_create, 1):
             file_path = file_info['path']
             content = file_info['content']
             
             # Handle subdirectories
             full_path = project_path / file_path
-            full_path.parent.mkdir(parents=True, exist_ok=True)
             
-            # Animate file creation
-            print(f"  [{i}/{len(files_to_create)}] Creating {Colors.BRIGHT_WHITE}{file_path}{Colors.RESET}...", end=" ")
+            # Create parent directories if needed
+            try:
+                full_path.parent.mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                print(f"  [{i}/{len(files_to_create)}] {Colors.RED}✗{Colors.RESET} Failed to create directory for {Colors.BRIGHT_WHITE}{file_path}{Colors.RESET}: {e}")
+                failed_count += 1
+                continue
+            
+            # Animate file creation with live typing effect
+            print(f"  [{i}/{len(files_to_create)}] Creating {Colors.BRIGHT_WHITE}{file_path}{Colors.RESET}...", end=" ", flush=True)
             
             try:
                 with open(full_path, 'w', encoding='utf-8') as f:
-                    # Animate writing content
-                    if config.SHOW_FILE_ANIMATIONS and len(content) < 5000:
-                        for char in content:
+                    # Live typing animation for smaller files
+                    if config.SHOW_FILE_ANIMATIONS and len(content) < 3000:
+                        animation_speed = config.TYPING_ANIMATION_SPEED * 0.3
+                        for char_idx, char in enumerate(content):
                             f.write(char)
-                            f.flush()
-                            time.sleep(config.TYPING_ANIMATION_SPEED * 0.5)
+                            # Flush every few characters for performance
+                            if char_idx % 10 == 0:
+                                f.flush()
+                            time.sleep(animation_speed)
+                        f.flush()
                     else:
+                        # Write directly for large files
                         f.write(content)
                 
-                print(f"{Colors.BRIGHT_GREEN}✓{Colors.RESET}")
+                print(f"{Colors.BRIGHT_GREEN}✓ Done{Colors.RESET} ({len(content)} bytes)")
+                created_count += 1
                 
-                # Log operation
+                # Log operation to database
                 self.db.log_file_operation(
                     operation_type='create',
                     file_path=file_path,
@@ -742,9 +964,20 @@ build/
                 )
                 
             except Exception as e:
-                print(f"{Colors.RED}✗ Error: {e}{Colors.RESET}")
+                print(f"{Colors.RED}✗ Error: {str(e)[:50]}{Colors.RESET}")
+                failed_count += 1
         
-        print(f"\n{Colors.BRIGHT_GREEN}✓ Created {len(files_to_create)} files successfully{Colors.RESET}\n")
+        # Final summary
+        print(f"\n{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}")
+        print(f"{Colors.BOLD}{Colors.BRIGHT_WHITE}                    CREATION SUMMARY                           {Colors.RESET}")
+        print(f"{Colors.BRIGHT_CYAN}═══════════════════════════════════════════════════════════{Colors.RESET}")
+        print(f"\n  {Colors.BRIGHT_GREEN}✓ Successfully created:{Colors.RESET} {created_count} files")
+        if failed_count > 0:
+            print(f"  {Colors.BRIGHT_RED}✗ Failed to create:{Colors.RESET} {failed_count} files")
+        
+        print(f"\n  {Colors.DIM}Project location: {Colors.BRIGHT_WHITE}{project_path}{Colors.RESET}")
+        print(f"  {Colors.DIM}Tip: Use '{Colors.BRIGHT_GREEN}/edit <filename> <request>{Colors.RESET}' to modify any file{Colors.RESET}")
+        print()
     
     def handle_edit_file(self, args: str) -> None:
         """

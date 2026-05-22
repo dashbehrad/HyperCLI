@@ -480,6 +480,261 @@
         "Adjust approach based on user satisfaction",
         "Learn from corrections and suggestions"
       ]
+    },
+    "ui_ux_design_principles": {
+      "visual_hierarchy": [
+        "Use consistent spacing and alignment",
+        "Group related elements together",
+        "Establish clear visual flow",
+        "Create contrast for emphasis",
+        "Maintain proportional sizing"
+      ],
+      "color_theory": [
+        "Use color purposefully, not decoratively",
+        "Ensure sufficient contrast ratios (WCAG AA minimum)",
+        "Limit palette to 3-5 primary colors",
+        "Consider color psychology and cultural meanings",
+        "Support dark and light themes"
+      ],
+      "typography": [
+        "Choose readable fonts for code (monospace)",
+        "Establish clear type scale (hierarchy)",
+        "Limit font families (2-3 maximum)",
+        "Ensure adequate line height (1.4-1.6)",
+        "Control line length (45-75 characters)"
+      ],
+      "interaction_design": [
+        "Provide immediate feedback for actions",
+        "Use progressive disclosure for complex features",
+        "Implement undo/redo functionality",
+        "Show loading states for async operations",
+        "Use animations purposefully and subtly"
+      ],
+      "accessibility": [
+        "Support keyboard navigation",
+        "Provide screen reader compatibility",
+        "Use semantic HTML/structure",
+        "Include alt text for images",
+        "Ensure focus indicators are visible"
+      ],
+      "responsive_design": [
+        "Design mobile-first when applicable",
+        "Use flexible layouts (flexbox, grid)",
+        "Test across multiple screen sizes",
+        "Optimize touch targets (min 44x44px)",
+        "Handle orientation changes gracefully"
+      ],
+      "performance_optimization": [
+        "Minimize render-blocking resources",
+        "Lazy load non-critical assets",
+        "Optimize images and media",
+        "Reduce DOM complexity",
+        "Implement efficient caching strategies"
+      ],
+      "user_feedback_patterns": [
+        "Toast notifications for brief messages",
+        "Modal dialogs for critical confirmations",
+        "Progress indicators for long operations",
+        "Inline validation for forms",
+        "Error messages with recovery options"
+      ],
+      "consistency_principles": [
+        "Maintain consistent terminology",
+        "Use predictable interaction patterns",
+        "Apply uniform styling across components",
+        "Follow platform conventions",
+        "Document design decisions"
+      ],
+      "emotional_design": [
+        "Create delightful micro-interactions",
+        "Use friendly, conversational tone",
+        "Celebrate user achievements",
+        "Show empathy in error states",
+        "Build trust through transparency"
+      ]
+    },
+    "code_generation_best_practices": {
+      "file_structure": [
+        "Start with imports/dependencies",
+        "Define constants and configurations",
+        "Declare classes and functions",
+        "Include main execution block",
+        "Add comprehensive docstrings"
+      ],
+      "error_handling_patterns": [
+        "Use try-except blocks appropriately",
+        "Log errors with context",
+        "Provide meaningful error messages",
+        "Implement graceful degradation",
+        "Include fallback mechanisms"
+      ],
+      "documentation_requirements": [
+        "Module-level docstring explaining purpose",
+        "Function/method docstrings with args/returns",
+        "Class docstrings with attributes",
+        "Inline comments for complex logic",
+        "README with setup and usage instructions"
+      ],
+      "testing_recommendations": [
+        "Include unit test examples",
+        "Mock external dependencies",
+        "Test edge cases and boundaries",
+        "Verify error conditions",
+        "Measure code coverage"
+      ]
+    },
+    "project_templates": {
+      "python_web_api": {
+        "structure": [
+          "app/",
+          "  __init__.py",
+          "  main.py",
+          "  routes/",
+          "    __init__.py",
+          "    api.py",
+          "  models/",
+          "    __init__.py",
+          "    user.py",
+          "  services/",
+          "    __init__.py",
+          "    auth.py",
+          "tests/",
+          "  __init__.py",
+          "  test_api.py",
+          ".env.example",
+          ".gitignore",
+          "requirements.txt",
+          "README.md",
+          "run.sh"
+        ],
+        "key_features": [
+          "RESTful API endpoints",
+          "JWT authentication",
+          "Database integration (SQLAlchemy)",
+          "Input validation (Pydantic)",
+          "Error handling middleware",
+          "CORS configuration",
+          "Rate limiting",
+          "API documentation (OpenAPI/Swagger)"
+        ]
+      },
+      "react_frontend": {
+        "structure": [
+          "src/",
+          "  components/",
+          "    common/",
+          "    layout/",
+          "    features/",
+          "  pages/",
+          "  hooks/",
+          "  contexts/",
+          "  services/",
+          "  utils/",
+          "  styles/",
+          "  App.tsx",
+          "  index.tsx",
+          "public/",
+          "  index.html",
+          "  favicon.ico",
+          ".env.example",
+          ".eslintrc.js",
+          ".prettierrc",
+          "package.json",
+          "tsconfig.json",
+          "README.md"
+        ],
+        "key_features": [
+          "Component-based architecture",
+          "TypeScript for type safety",
+          "State management (Redux/Context)",
+          "React Router for navigation",
+          "API integration layer",
+          "Responsive design",
+          "Form validation",
+          "Error boundaries"
+        ]
+      },
+      "cli_tool": {
+        "structure": [
+          "src/",
+          "  __init__.py",
+          "  cli.py",
+          "  commands/",
+          "    __init__.py",
+          "    create.py",
+          "    list.py",
+          "    delete.py",
+          "  utils/",
+          "    __init__.py",
+          "    helpers.py",
+          "tests/",
+          "  __init__.py",
+          "  test_cli.py",
+          ".gitignore",
+          "pyproject.toml",
+          "requirements.txt",
+          "README.md",
+          "setup.py"
+        ],
+        "key_features": [
+          "Argument parsing (argparse/click)",
+          "Subcommands structure",
+          "Configuration management",
+          "Logging setup",
+          "Progress indicators",
+          "Color output",
+          "Error handling",
+          "Help documentation"
+        ]
+      }
+    },
+    "communication_guidelines": {
+      "tone_adjustments": {
+        "for_beginners": [
+          "Use simple, jargon-free language",
+          "Explain concepts step-by-step",
+          "Provide analogies and examples",
+          "Encourage questions",
+          "Celebrate progress"
+        ],
+        "for_intermediate": [
+          "Balance explanation with brevity",
+          "Introduce advanced concepts gradually",
+          "Reference best practices",
+          "Suggest optimization opportunities",
+          "Provide context for decisions"
+        ],
+        "for_experts": [
+          "Be concise and direct",
+          "Focus on trade-offs and implications",
+          "Discuss architectural considerations",
+          "Reference relevant patterns",
+          "Assume familiarity with fundamentals"
+        ]
+      },
+      "response_structure": {
+        "for_code_requests": [
+          "Acknowledge the request",
+          "Present the solution clearly",
+          "Explain key decisions",
+          "Highlight important sections",
+          "Offer further assistance"
+        ],
+        "for_debugging": [
+          "Restate the problem to confirm understanding",
+          "Identify root cause(s)",
+          "Propose solution(s) with rationale",
+          "Show corrected code",
+          "Suggest prevention strategies"
+        ],
+        "for_architecture_questions": [
+          "Clarify requirements and constraints",
+          "Present multiple options if applicable",
+          "Compare trade-offs objectively",
+          "Make a recommendation with justification",
+          "Outline implementation steps"
+        ]
+      }
     }
   }
 }
