@@ -1,1 +1,32 @@
-Nothing should be ignored based on the provided file changes. The modified files (`main.py` and `system_prompt.json`) are source/config files that should not be added to .gitignore.
+```
+# Compiled Python files
+__pycache__/
+*.pyc
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment files
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+
+# Dependencies
+.venv/
+venv/
+node_modules/
+
+# Build artifacts
+dist/
+build/
+target/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+```

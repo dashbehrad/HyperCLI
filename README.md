@@ -687,12 +687,12 @@ db.clear_conversation("project_name")
 
 ### Resources
 - Documentation: This guide
-- GitHub: [Repository URL]
-- Issues: [Issue Tracker URL]
+- GitHub: https://github.com/dashbehrad/HyperCLI.git
+- Issues: https://github.com/dashbehrad/HyperCLI.git/issues
 
 ### Contributing
 Contributions welcome! Please:
-1. Fork the repository
+1. Fork the repository at https://github.com/dashbehrad/HyperCLI.git
 2. Create feature branch
 3. Submit pull request
 
@@ -709,10 +709,12 @@ MIT License - See LICENSE file for details
 ### v1.0.0
 - Initial release
 - Core functionality
-- Project management
-- File operations
-- AI integration
+- Project management with automatic file creation
+- File operations with live animation
+- AI integration with Ollama (deepseek-r1:8b)
 - Database persistence
+- Enhanced system prompt for generating comprehensive code files
+- No confirmation prompts - files created automatically
 
 ---
 
