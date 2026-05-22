@@ -1,0 +1,44 @@
+# HyperCLI Requirements
+# =====================
+# Python dependencies for HyperCLI - AI-Powered Terminal Code Assistant
+# 
+# Install with: pip install -r requirements.txt
+#
+# Author: HyperCLI Development Team
+# Version: 1.0.0
+
+# No external dependencies required!
+# ===================================
+# HyperCLI is designed to work with Python's standard library only.
+# All HTTP requests are handled using urllib (built-in).
+# Database operations use sqlite3 (built-in).
+# JSON parsing uses json (built-in).
+
+# The application connects to Ollama via its REST API,
+# which requires no additional Python packages.
+
+# Optional dependencies (uncomment if needed):
+# --------------------------------------------
+
+# For enhanced terminal colors on Windows:
+# colorama>=0.4.6
+
+# For better HTTP handling (alternative to urllib):
+# requests>=2.31.0
+
+# For async support:
+# aiohttp>=3.9.0
+
+# For rich terminal output:
+# rich>=13.7.0
+
+# For progress bars:
+# tqdm>=4.66.0
+
+# Note: These optional dependencies are not required for basic functionality.
+# HyperCLI works perfectly with just the Python standard library.
+
+# Python version requirement
+# ==========================
+# Python 3.8 or higher is recommended
+# (for typing hints and modern syntax features)
