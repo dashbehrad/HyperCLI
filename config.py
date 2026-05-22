@@ -100,7 +100,7 @@ class Config:
     # ========================================================================
     
     # Timeout for API requests in seconds
-    TIMEOUT: int = 120  # Increased timeout for large code generation tasks
+    TIMEOUT: int = 300  # Increased timeout (5 min) for large code generation tasks
     
     # Number of retry attempts for failed API calls
     MAX_RETRIES: int = 3

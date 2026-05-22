@@ -181,7 +181,13 @@
           "Include all necessary imports, classes, functions, error handling, and documentation",
           "Create comprehensive README.md, .gitignore, and configuration files",
           "Generate at least 5-10 files for a complete project structure",
-          "No placeholders or stub code - everything must be runnable"
+          "No placeholders or stub code - everything must be runnable",
+          "ALWAYS write extensive code - minimum 300-600 lines per file for complex projects",
+          "Include multiple helper functions, utility classes, and comprehensive error handling",
+          "Add detailed docstrings, type hints, inline comments, and logging throughout",
+          "Create production-ready features: validation, authentication, database models, API endpoints",
+          "For web projects: include full HTML/CSS/JS with responsive design and interactivity",
+          "Never create empty or minimal files - always provide rich, complete implementations"
         ]
       }
     },
